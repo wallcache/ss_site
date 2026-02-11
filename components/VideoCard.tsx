@@ -30,14 +30,11 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
       if (!video) return;
 
       if (active) {
-        if (!hasPlayedRef.current) {
-          video.currentTime = 0;
-          hasPlayedRef.current = true;
-        }
+        // Always restart from beginning when becoming active
+        video.currentTime = 0;
         video.play().catch(() => {});
       } else {
         video.pause();
-        hasPlayedRef.current = false;
         video.currentTime = 0.001;
       }
     }, [active]);

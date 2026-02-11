@@ -61,11 +61,11 @@ export default function VideoStrip() {
             const activeIndex = clampedProgress * (PANEL_COUNT - 1);
             const dist = Math.abs(i - activeIndex);
             // First video starts halfway through the zoom-in entry
-            // All videos stay playing until fully off screen (dist < 0.9)
+            // Videos deactivate once mostly off screen (dist < 0.7)
             const isActive =
               i === 0
-                ? progress > -0.25 && dist < 0.9
-                : dist < 0.9;
+                ? progress > -0.25 && dist < 0.7
+                : dist < 0.7;
             return (
               <VideoCard
                 key={src}
