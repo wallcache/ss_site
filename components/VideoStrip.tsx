@@ -43,7 +43,7 @@ export default function VideoStrip({ onLoadProgress }: VideoStripProps) {
 
   const clampedProgress = Math.max(0, Math.min(1, progress));
   const vw = typeof window !== "undefined" ? window.innerWidth : 0;
-  const totalShift = Math.max(0, stripWidth - vw);
+  const totalShift = Math.max(0, stripWidth - panelWidth);
   const translateX = -(clampedProgress * totalShift);
 
   // Zoom-in entry effect
