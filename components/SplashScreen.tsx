@@ -1,93 +1,103 @@
 "use client";
 
+import NebulaCanvas from "./NebulaCanvas";
+
+// Deterministic pseudo-random from seed
+const seeded = (i: number) => {
+  const x = Math.sin(i * 127.1 + 311.7) * 43758.5453;
+  return x - Math.floor(x);
+};
+
+const stars = Array.from({ length: 50 }, (_, i) => ({
+  top: seeded(i) * 100,
+  left: seeded(i + 50) * 100,
+  size: 1 + seeded(i + 100) * 2,
+  duration: 2 + seeded(i + 150) * 4,
+  delay: seeded(i + 200) * 5,
+}));
+
+const shootingStars = Array.from({ length: 5 }, (_, i) => ({
+  top: 5 + seeded(i + 300) * 40,
+  left: seeded(i + 350) * 60,
+  duration: 1.5 + seeded(i + 400) * 1.5,
+  delay: i * 4 + seeded(i + 450) * 3,
+}));
+
 export default function SplashScreen() {
   return (
-    <section
-      className="relative h-screen flex items-center justify-center overflow-hidden"
-      style={{ background: "radial-gradient(ellipse at center, #3d1a5c 0%, #2a1040 50%, #1a0a2e 100%)" }}
-    >
-      {/* Decorative gold border */}
-      <div
-        className="absolute inset-4 md:inset-8 pointer-events-none"
-        style={{ border: "1px solid rgba(212, 168, 67, 0.25)", borderRadius: "2px" }}
-      />
+    <section className="relative h-screen flex items-center justify-center overflow-hidden">
+      {/* WebGL nebula background */}
+      <NebulaCanvas />
 
-      {/* Scattered gold stars */}
-      {[...Array(20)].map((_, i) => (
+      {/* Twinkling stars */}
+      {stars.map((s, i) => (
         <div
-          key={i}
-          className="absolute text-[#d4a843] animate-pulse"
+          key={`star-${i}`}
+          className="star"
           style={{
-            top: `${10 + Math.sin(i * 1.7) * 40 + 40}%`,
-            left: `${10 + Math.cos(i * 2.3) * 40 + 40}%`,
-            opacity: 0.15 + (i % 5) * 0.08,
-            fontSize: `${6 + (i % 4) * 3}px`,
-            animationDelay: `${i * 0.3}s`,
-            animationDuration: `${2 + (i % 3)}s`,
+            top: `${s.top}%`,
+            left: `${s.left}%`,
+            width: `${s.size}px`,
+            height: `${s.size}px`,
+            animationDuration: `${s.duration}s`,
+            animationDelay: `${s.delay}s`,
           }}
-        >
-          &#10022;
-        </div>
+        />
       ))}
 
-      <div className="text-center relative z-10">
-        {/* Couple initials */}
-        <p
-          className="text-sm md:text-base tracking-[0.4em] uppercase mb-6"
-          style={{ color: "rgba(212, 168, 67, 0.5)" }}
-        >
-          The stars have aligned
-        </p>
+      {/* Shooting stars */}
+      {shootingStars.map((s, i) => (
+        <div
+          key={`shoot-${i}`}
+          className="shooting-star"
+          style={{
+            top: `${s.top}%`,
+            left: `${s.left}%`,
+            animationDuration: `${s.duration}s`,
+            animationDelay: `${s.delay}s`,
+          }}
+        />
+      ))}
 
+      {/* Content */}
+      <div className="text-center relative z-10 px-4">
         <h1
-          className="text-7xl md:text-9xl font-light tracking-wide"
+          className="text-8xl md:text-[10rem] font-light leading-none"
           style={{
             color: "#d4a843",
             fontFamily: "Georgia, 'Times New Roman', serif",
+            letterSpacing: "0.08em",
           }}
         >
-          S<span className="text-5xl md:text-7xl mx-1" style={{ color: "rgba(212, 168, 67, 0.4)" }}>&amp;</span>S
+          S
+          <span
+            className="inline-block text-6xl md:text-8xl align-middle mx-2 md:mx-4"
+            style={{
+              color: "rgba(212, 168, 67, 0.3)",
+              fontFamily: "Georgia, 'Times New Roman', serif",
+              transform: "scaleX(-1)",
+            }}
+          >
+            S
+          </span>
         </h1>
 
-        <p
-          className="mt-4 text-lg md:text-2xl tracking-wide"
+        <div
+          className="mt-6 text-sm md:text-base tracking-[0.25em]"
           style={{
-            color: "#d4a843",
+            color: "rgba(212, 168, 67, 0.5)",
             fontFamily: "Georgia, 'Times New Roman', serif",
           }}
         >
           Sara &amp; Sevveriano
-        </p>
-
-        {/* Divider ornament */}
-        <div className="flex items-center justify-center gap-3 mt-6 mb-6">
-          <div className="w-16 h-px" style={{ background: "linear-gradient(to right, transparent, rgba(212, 168, 67, 0.4))" }} />
-          <span className="text-xs" style={{ color: "rgba(212, 168, 67, 0.4)" }}>&#10022;</span>
-          <div className="w-16 h-px" style={{ background: "linear-gradient(to left, transparent, rgba(212, 168, 67, 0.4))" }} />
         </div>
 
-        <p
-          className="text-xs md:text-sm tracking-[0.3em] uppercase"
-          style={{ color: "rgba(212, 168, 67, 0.45)" }}
-        >
-          Scroll to explore
-        </p>
-
-        <div className="mt-8 animate-bounce">
-          <svg
-            className="w-5 h-5 mx-auto"
-            style={{ color: "rgba(212, 168, 67, 0.3)" }}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M19 14l-7 7m0 0l-7-7m7 7V3"
-            />
-          </svg>
+        {/* Minimal scroll indicator */}
+        <div className="mt-16 animate-bounce">
+          <div
+            className="w-px h-8 mx-auto"
+            style={{ background: "linear-gradient(to bottom, rgba(212, 168, 67, 0.4), transparent)" }}
+          />
         </div>
       </div>
     </section>

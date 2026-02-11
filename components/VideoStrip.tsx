@@ -5,10 +5,10 @@ import { useScrollProgress } from "@/hooks/useScrollProgress";
 import VideoCard from "./VideoCard";
 
 const videos = [
-  { src: "/videos/frame1.mp4", eager: true },
-  { src: "/videos/frame2.mp4", eager: true },
-  { src: "/videos/fram3.mp4", eager: false },
-  { src: "/videos/frame4.mp4", eager: false },
+  "/videos/frame1.mp4",
+  "/videos/frame2.mp4",
+  "/videos/fram3.mp4",
+  "/videos/frame4.mp4",
 ];
 
 const PANEL_COUNT = videos.length;
@@ -25,13 +25,15 @@ export default function VideoStrip() {
   // Which panel (0-3) is currently most visible
   const activeIndex = Math.round(clampedProgress * (PANEL_COUNT - 1));
 
-  // translateX: 0vw → -300vw (4 panels, shift by 3 to reveal all)
+  // translateX: 0vw → -300vw
   const translateX = clampedProgress * -(PANEL_COUNT - 1) * 100;
 
-  // Zoom-out effect when scrolling above the runway (progress < 0)
-  const zoomOut = progress < 0;
-  const scale = zoomOut ? Math.max(0.85, 1 + progress * 0.15) : 1;
-  const opacity = zoomOut ? Math.max(0.6, 1 + progress * 0.4) : 1;
+  // Zoom-in entry: when progress < 0, we're above the runway
+  // Scale from 0.7 → 1.0 as we enter, with fade
+  const entering = progress < 0;
+  const entryT = entering ? Math.max(0, 1 + progress * 2) : 1; // 0→1 over first half of approach
+  const scale = entering ? 0.7 + entryT * 0.3 : 1;
+  const opacity = entering ? entryT : 1;
 
   // Snap to nearest video panel after scrolling stops
   const snapToNearest = useCallback(() => {
@@ -44,7 +46,6 @@ export default function VideoStrip() {
     const scrolled = -el.getBoundingClientRect().top;
     const currentProgress = scrolled / runwayHeight;
 
-    // Only snap if we're within the runway
     if (currentProgress < 0 || currentProgress > 1) return;
 
     const nearestIndex = Math.round(currentProgress * (PANEL_COUNT - 1));
@@ -76,7 +77,6 @@ export default function VideoStrip() {
       className="relative"
       style={{ height: `${PANEL_COUNT * 100}vh` }}
     >
-      {/* Sticky container pinned to viewport */}
       <div className="sticky top-0 h-screen w-screen overflow-hidden">
         <div
           className="flex h-full will-change-transform"
@@ -86,11 +86,10 @@ export default function VideoStrip() {
             transformOrigin: "center center",
           }}
         >
-          {videos.map((video, i) => (
+          {videos.map((src, i) => (
             <VideoCard
-              key={video.src}
-              src={video.src}
-              eager={video.eager}
+              key={src}
+              src={src}
               active={i === activeIndex}
             />
           ))}
