@@ -14,6 +14,23 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
     const [loaded, setLoaded] = useState(false);
     const hasPlayedRef = useRef(false);
 
+    // Signal ready as soon as metadata is available (reliable on mobile)
+    useEffect(() => {
+      const video = videoRef.current;
+      if (!video) return;
+      const handleMeta = () => {
+        setLoaded(true);
+        onReady?.();
+      };
+      // Already loaded (cached)
+      if (video.readyState >= 1) {
+        handleMeta();
+        return;
+      }
+      video.addEventListener("loadedmetadata", handleMeta, { once: true });
+      return () => video.removeEventListener("loadedmetadata", handleMeta);
+    }, [onReady]);
+
     // Force first frame to render (mobile Safari needs a seek to paint)
     useEffect(() => {
       const video = videoRef.current;
@@ -76,7 +93,6 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
           loop
           playsInline
           preload="auto"
-          onSeeked={() => { setLoaded(true); onReady?.(); }}
         />
       </div>
     );

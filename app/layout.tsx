@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 
@@ -12,6 +12,12 @@ const cormorant = Cormorant_Garamond({
 export const metadata: Metadata = {
   title: "S & S",
   description: "Sara & Sevveriano",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

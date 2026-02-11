@@ -77,7 +77,10 @@ export default function SplashScreen({ loadProgress, ready }: SplashScreenProps)
       </div>
 
       {/* Bottom: loading bar or scroll prompt */}
-      <div className="absolute bottom-8 left-0 right-0 z-10 flex flex-col items-center">
+      <div
+        className="absolute left-0 right-0 z-10 flex flex-col items-center"
+        style={{ bottom: "calc(5rem + env(safe-area-inset-bottom, 0px))" }}
+      >
         {!ready ? (
           /* Loading bar */
           <div className="w-48 md:w-64">

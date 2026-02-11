@@ -20,15 +20,16 @@ interface VideoStripProps {
 export default function VideoStrip({ onLoadProgress }: VideoStripProps) {
   const runwayRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const stripRef = useRef<HTMLDivElement>(null);
   const progress = useScrollProgress(runwayRef);
   const [panelWidth, setPanelWidth] = useState(0);
+  const [stripWidth, setStripWidth] = useState(0);
   const loadedCount = useRef(0);
 
   useEffect(() => {
     const measure = () => {
-      if (panelRef.current) {
-        setPanelWidth(panelRef.current.offsetWidth);
-      }
+      if (panelRef.current) setPanelWidth(panelRef.current.offsetWidth);
+      if (stripRef.current) setStripWidth(stripRef.current.scrollWidth);
     };
     measure();
     window.addEventListener("resize", measure);
@@ -41,7 +42,8 @@ export default function VideoStrip({ onLoadProgress }: VideoStripProps) {
   }, [onLoadProgress]);
 
   const clampedProgress = Math.max(0, Math.min(1, progress));
-  const totalShift = panelWidth * (PANEL_COUNT - 1);
+  const vw = typeof window !== "undefined" ? window.innerWidth : 0;
+  const totalShift = Math.max(0, stripWidth - vw);
   const translateX = -(clampedProgress * totalShift);
 
   // Zoom-in entry effect
@@ -50,10 +52,10 @@ export default function VideoStrip({ onLoadProgress }: VideoStripProps) {
   const scale = entering ? 0.7 + entryT * 0.3 : 1;
   const opacity = entering ? entryT : 1;
 
-  const centerOffset = panelWidth > 0 ? (window.innerWidth - panelWidth) / 2 : 0;
+  const centerOffset = panelWidth > 0 ? (vw - panelWidth) / 2 : 0;
 
   // How many panels fit in the viewport — determines active threshold
-  const visibleHalf = panelWidth > 0 ? window.innerWidth / panelWidth / 2 : 0.5;
+  const visibleHalf = panelWidth > 0 ? vw / panelWidth / 2 : 0.5;
   const activeThreshold = visibleHalf + 0.2;
 
   return (
@@ -64,6 +66,7 @@ export default function VideoStrip({ onLoadProgress }: VideoStripProps) {
     >
       <div className="sticky top-0 h-screen w-screen overflow-hidden">
         <div
+          ref={stripRef}
           className="flex h-full will-change-transform"
           style={{
             transform: `translateX(${centerOffset + translateX}px) scale(${scale})`,
