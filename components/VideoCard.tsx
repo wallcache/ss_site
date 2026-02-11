@@ -75,7 +75,7 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
 
           <video
             ref={videoRef}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
             src={src}
             muted
             loop
