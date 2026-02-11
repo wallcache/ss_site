@@ -61,7 +61,8 @@ export default function VideoStrip() {
             // Which fractional index is currently centered
             const activeIndex = clampedProgress * (PANEL_COUNT - 1);
             // Video is "active" when it's within ~0.4 of center (~70% on screen)
-            const isActive = progress >= 0 && Math.abs(i - activeIndex) < 0.4;
+            // progress > 0.02 ensures horizontal scroll has properly begun
+            const isActive = progress > 0.02 && Math.abs(i - activeIndex) < 0.4;
             return (
               <VideoCard
                 key={src}
