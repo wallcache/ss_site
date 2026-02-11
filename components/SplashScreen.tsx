@@ -22,7 +22,12 @@ function DiamondStar({ size }: { size: number }) {
   );
 }
 
-export default function SplashScreen() {
+interface SplashScreenProps {
+  loadProgress: number; // 0 to 1
+  ready: boolean;
+}
+
+export default function SplashScreen({ loadProgress, ready }: SplashScreenProps) {
   return (
     <section
       className="relative h-screen flex items-center justify-center overflow-hidden"
@@ -71,20 +76,46 @@ export default function SplashScreen() {
         </div>
       </div>
 
-      {/* Scroll prompt */}
+      {/* Bottom: loading bar or scroll prompt */}
       <div className="absolute bottom-8 left-0 right-0 z-10 flex flex-col items-center">
-        <div
-          className="text-[10px] md:text-xs tracking-[0.3em] uppercase mb-3 font-light"
-          style={{ color: "rgba(212, 168, 67, 0.3)" }}
-        >
-          Scroll to explore
-        </div>
-        <div className="animate-bounce">
+        {!ready ? (
+          /* Loading bar */
+          <div className="w-48 md:w-64">
+            <div
+              className="h-px rounded-full overflow-hidden"
+              style={{ background: "rgba(212, 168, 67, 0.15)" }}
+            >
+              <div
+                className="h-full rounded-full"
+                style={{
+                  width: `${loadProgress * 100}%`,
+                  background: "rgba(212, 168, 67, 0.5)",
+                  transition: "width 0.4s ease-out",
+                }}
+              />
+            </div>
+          </div>
+        ) : (
+          /* Scroll prompt — fades in */
           <div
-            className="w-px h-6 mx-auto"
-            style={{ background: "linear-gradient(to bottom, rgba(212, 168, 67, 0.3), transparent)" }}
-          />
-        </div>
+            style={{
+              animation: "fadeIn 0.8s ease-out forwards",
+            }}
+          >
+            <div
+              className="text-[10px] md:text-xs tracking-[0.3em] uppercase mb-3 font-light"
+              style={{ color: "rgba(212, 168, 67, 0.3)" }}
+            >
+              Scroll for your invitation
+            </div>
+            <div className="animate-bounce">
+              <div
+                className="w-px h-6 mx-auto"
+                style={{ background: "linear-gradient(to bottom, rgba(212, 168, 67, 0.3), transparent)" }}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
