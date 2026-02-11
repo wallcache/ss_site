@@ -60,7 +60,7 @@ export default function VideoCard({ src, active }: VideoCardProps) {
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           onLoadedData={() => setLoaded(true)}
         />
       </div>

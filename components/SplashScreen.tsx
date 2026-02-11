@@ -88,7 +88,7 @@ export default function SplashScreen() {
           >S</span><span
             className="inline-block text-7xl md:text-9xl"
             style={{
-              color: "rgba(212, 168, 67, 0.35)",
+              color: "#d4a843",
               fontWeight: 300,
               fontStyle: "italic",
               transform: "scaleX(-1)",
@@ -106,11 +106,23 @@ export default function SplashScreen() {
           Sara &amp; Sevveriano
         </div>
 
-        {/* Minimal scroll indicator */}
-        <div className="mt-16 animate-bounce">
+      </div>
+
+      {/* Scroll prompt pinned to bottom */}
+      <div className="absolute bottom-8 left-0 right-0 z-10 flex flex-col items-center">
+        <div
+          className="text-[10px] md:text-xs tracking-[0.3em] uppercase mb-3"
+          style={{
+            color: "rgba(212, 168, 67, 0.35)",
+            fontFamily: "Georgia, 'Times New Roman', serif",
+          }}
+        >
+          Scroll to explore
+        </div>
+        <div className="animate-bounce">
           <div
-            className="w-px h-8 mx-auto"
-            style={{ background: "linear-gradient(to bottom, rgba(212, 168, 67, 0.4), transparent)" }}
+            className="w-px h-6 mx-auto"
+            style={{ background: "linear-gradient(to bottom, rgba(212, 168, 67, 0.35), transparent)" }}
           />
         </div>
       </div>
