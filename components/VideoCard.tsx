@@ -4,13 +4,14 @@ import { useEffect, useRef, useState, forwardRef } from "react";
 
 interface VideoCardProps {
   src: string;
+  active: boolean;
 }
 
 const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
-  function VideoCard({ src }, ref) {
+  function VideoCard({ src, active }, ref) {
     const videoRef = useRef<HTMLVideoElement>(null);
-    const observeRef = useRef<HTMLDivElement>(null);
     const [loaded, setLoaded] = useState(false);
+    const hasPlayedRef = useRef(false);
 
     // Force first frame to render (mobile Safari needs a seek to paint)
     useEffect(() => {
@@ -23,27 +24,25 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
       return () => video.removeEventListener("loadeddata", showFirstFrame);
     }, []);
 
-    // Play from start when visible, pause + reset when not
+    // Play/pause based on active prop from scroll progress
     useEffect(() => {
-      const el = observeRef.current;
       const video = videoRef.current;
-      if (!el || !video) return;
+      if (!video) return;
 
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            video.currentTime = 0;
-            video.play().catch(() => {});
-          } else {
-            video.pause();
-          }
-        },
-        { threshold: 0.3 }
-      );
-
-      observer.observe(el);
-      return () => observer.disconnect();
-    }, []);
+      if (active) {
+        if (!hasPlayedRef.current) {
+          // First time entering view — start from beginning
+          video.currentTime = 0;
+          hasPlayedRef.current = true;
+        }
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+        // Reset so it replays from start next time
+        hasPlayedRef.current = false;
+        video.currentTime = 0.001;
+      }
+    }, [active]);
 
     return (
       <div
@@ -52,7 +51,6 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
         style={{ height: "100%", padding: "2vh 8px" }}
       >
         <div
-          ref={observeRef}
           className="relative"
           style={{
             height: "100%",

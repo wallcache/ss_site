@@ -57,13 +57,20 @@ export default function VideoStrip() {
             transformOrigin: "center center",
           }}
         >
-          {videos.map((src, i) => (
-            <VideoCard
-              key={src}
-              ref={i === 0 ? panelRef : undefined}
-              src={src}
-            />
-          ))}
+          {videos.map((src, i) => {
+            // Which fractional index is currently centered
+            const activeIndex = clampedProgress * (PANEL_COUNT - 1);
+            // Video is "active" when it's within ~0.4 of center (~70% on screen)
+            const isActive = progress >= 0 && Math.abs(i - activeIndex) < 0.4;
+            return (
+              <VideoCard
+                key={src}
+                ref={i === 0 ? panelRef : undefined}
+                src={src}
+                active={isActive}
+              />
+            );
+          })}
         </div>
       </div>
     </div>
