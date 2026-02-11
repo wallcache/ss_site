@@ -67,7 +67,7 @@ export default function SplashScreen() {
           className="mt-5 text-sm md:text-base tracking-[0.25em] font-light"
           style={{ color: "rgba(212, 168, 67, 0.5)" }}
         >
-          test Sara &amp; Sevveriano
+          Sara &amp; Sevveriano
         </div>
       </div>
 
