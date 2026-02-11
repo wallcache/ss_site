@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 import VideoCard from "./VideoCard";
 
@@ -13,11 +13,16 @@ const videos = [
 
 const PANEL_COUNT = videos.length;
 
-export default function VideoStrip() {
+interface VideoStripProps {
+  onLoadProgress?: (loaded: number, total: number) => void;
+}
+
+export default function VideoStrip({ onLoadProgress }: VideoStripProps) {
   const runwayRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const progress = useScrollProgress(runwayRef);
   const [panelWidth, setPanelWidth] = useState(0);
+  const loadedCount = useRef(0);
 
   useEffect(() => {
     const measure = () => {
@@ -30,6 +35,11 @@ export default function VideoStrip() {
     return () => window.removeEventListener("resize", measure);
   }, []);
 
+  const handleVideoReady = useCallback(() => {
+    loadedCount.current += 1;
+    onLoadProgress?.(loadedCount.current, PANEL_COUNT);
+  }, [onLoadProgress]);
+
   const clampedProgress = Math.max(0, Math.min(1, progress));
   const totalShift = panelWidth * (PANEL_COUNT - 1);
   const translateX = -(clampedProgress * totalShift);
@@ -41,6 +51,10 @@ export default function VideoStrip() {
   const opacity = entering ? entryT : 1;
 
   const centerOffset = panelWidth > 0 ? (window.innerWidth - panelWidth) / 2 : 0;
+
+  // How many panels fit in the viewport — determines active threshold
+  const visibleHalf = panelWidth > 0 ? window.innerWidth / panelWidth / 2 : 0.5;
+  const activeThreshold = visibleHalf + 0.2;
 
   return (
     <div
@@ -60,18 +74,17 @@ export default function VideoStrip() {
           {videos.map((src, i) => {
             const activeIndex = clampedProgress * (PANEL_COUNT - 1);
             const dist = Math.abs(i - activeIndex);
-            // First video starts halfway through the zoom-in entry
-            // Videos deactivate once mostly off screen (dist < 0.7)
             const isActive =
               i === 0
-                ? progress > -0.25 && dist < 0.7
-                : dist < 0.7;
+                ? progress > -0.25 && dist < activeThreshold
+                : dist < activeThreshold;
             return (
               <VideoCard
                 key={src}
                 ref={i === 0 ? panelRef : undefined}
                 src={src}
                 active={isActive}
+                onReady={handleVideoReady}
               />
             );
           })}

@@ -5,10 +5,11 @@ import { useEffect, useRef, useState, forwardRef } from "react";
 interface VideoCardProps {
   src: string;
   active: boolean;
+  onReady?: () => void;
 }
 
 const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
-  function VideoCard({ src, active }, ref) {
+  function VideoCard({ src, active, onReady }, ref) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [loaded, setLoaded] = useState(false);
     const hasPlayedRef = useRef(false);
@@ -30,12 +31,16 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
       if (!video) return;
 
       if (active) {
-        // Always restart from beginning when becoming active
-        video.currentTime = 0;
+        if (!hasPlayedRef.current) {
+          // First time becoming active — start from beginning
+          video.currentTime = 0;
+          hasPlayedRef.current = true;
+        }
         video.play().catch(() => {});
       } else {
         video.pause();
         video.currentTime = 0.001;
+        hasPlayedRef.current = false;
       }
     }, [active]);
 
@@ -71,7 +76,7 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
           loop
           playsInline
           preload="auto"
-          onSeeked={() => setLoaded(true)}
+          onSeeked={() => { setLoaded(true); onReady?.(); }}
         />
       </div>
     );
