@@ -5,7 +5,7 @@ import { useScrollProgress } from "@/hooks/useScrollProgress";
 import VideoCard from "./VideoCard";
 
 const videos = [
-  "/videos/final_boi.mp4",
+  "/videos/curtains_card.mp4",
   "/videos/cameos_card.mp4",
   "/videos/legos_card.mp4",
   "/videos/lovers_card.mp4",
