@@ -42,7 +42,7 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
       >
         <div
           ref={observeRef}
-          className="relative rounded-sm overflow-hidden"
+          className="relative rounded-2xl overflow-hidden"
           style={{
             height: "100%",
             aspectRatio: "9 / 16",
