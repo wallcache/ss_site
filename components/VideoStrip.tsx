@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 import VideoCard from "./VideoCard";
 
@@ -15,27 +15,39 @@ const PANEL_COUNT = videos.length;
 
 export default function VideoStrip() {
   const runwayRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const progress = useScrollProgress(runwayRef);
   const snapTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isSnapping = useRef(false);
+  const [panelWidth, setPanelWidth] = useState(0);
 
-  // Clamp progress for horizontal movement: 0 → 1
+  // Measure panel width on mount and resize
+  useEffect(() => {
+    const measure = () => {
+      if (panelRef.current) {
+        setPanelWidth(panelRef.current.offsetWidth);
+      }
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
   const clampedProgress = Math.max(0, Math.min(1, progress));
-
-  // Which panel (0-3) is currently most visible
   const activeIndex = Math.round(clampedProgress * (PANEL_COUNT - 1));
 
-  // translateX: 0vw → -300vw
-  const translateX = clampedProgress * -(PANEL_COUNT - 1) * 100;
+  // Translate: center each panel in the viewport
+  // At progress=0, first panel centered. At progress=1, last panel centered.
+  const totalShift = panelWidth * (PANEL_COUNT - 1);
+  const translateX = -(clampedProgress * totalShift);
 
-  // Zoom-in entry: when progress < 0, we're above the runway
-  // Scale from 0.7 → 1.0 as we enter, with fade
+  // Zoom-in entry effect
   const entering = progress < 0;
-  const entryT = entering ? Math.max(0, 1 + progress * 2) : 1; // 0→1 over first half of approach
+  const entryT = entering ? Math.max(0, 1 + progress * 2) : 1;
   const scale = entering ? 0.7 + entryT * 0.3 : 1;
   const opacity = entering ? entryT : 1;
 
-  // Snap to nearest video panel after scrolling stops
+  // Snap to nearest panel
   const snapToNearest = useCallback(() => {
     const el = runwayRef.current;
     if (!el || isSnapping.current) return;
@@ -71,6 +83,9 @@ export default function VideoStrip() {
     };
   }, [snapToNearest]);
 
+  // Center offset: shift strip so first panel starts centered in viewport
+  const centerOffset = panelWidth > 0 ? (window.innerWidth - panelWidth) / 2 : 0;
+
   return (
     <div
       ref={runwayRef}
@@ -81,7 +96,7 @@ export default function VideoStrip() {
         <div
           className="flex h-full will-change-transform"
           style={{
-            transform: `translateX(${translateX}vw) scale(${scale})`,
+            transform: `translateX(${centerOffset + translateX}px) scale(${scale})`,
             opacity,
             transformOrigin: "center center",
           }}
@@ -89,6 +104,7 @@ export default function VideoStrip() {
           {videos.map((src, i) => (
             <VideoCard
               key={src}
+              ref={i === 0 ? panelRef : undefined}
               src={src}
               active={i === activeIndex}
             />
