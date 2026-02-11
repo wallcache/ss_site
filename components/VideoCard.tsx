@@ -12,6 +12,17 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
     const observeRef = useRef<HTMLDivElement>(null);
     const [loaded, setLoaded] = useState(false);
 
+    // Force first frame to render (mobile Safari needs a seek to paint)
+    useEffect(() => {
+      const video = videoRef.current;
+      if (!video) return;
+      const showFirstFrame = () => {
+        video.currentTime = 0.001;
+      };
+      video.addEventListener("loadeddata", showFirstFrame, { once: true });
+      return () => video.removeEventListener("loadeddata", showFirstFrame);
+    }, []);
+
     // Play from start when visible, pause + reset when not
     useEffect(() => {
       const el = observeRef.current;
@@ -74,7 +85,7 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
             loop
             playsInline
             preload="auto"
-            onLoadedData={() => setLoaded(true)}
+            onSeeked={() => setLoaded(true)}
           />
         </div>
       </div>
