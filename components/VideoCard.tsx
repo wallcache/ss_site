@@ -48,21 +48,10 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
         className="flex-shrink-0 relative flex items-center justify-center"
         style={{ height: "100%", padding: "2vh 8px" }}
       >
-        <div
-          style={{
-            height: "100%",
-            aspectRatio: "9 / 16",
-            maxWidth: "calc(100vw - 32px)",
-            borderRadius: "20px",
-            border: "1px solid rgba(212,168,67,0.45)",
-            boxShadow: "0 4px 60px rgba(0,0,0,0.8), 0 0 100px rgba(13,6,24,0.6)",
-            overflow: "hidden",
-            transform: "translateZ(0)",
-          }}
-        >
+        <div style={{ height: "100%", position: "relative" }}>
           {!loaded && (
             <div className="absolute inset-0 flex items-center justify-center z-10"
-                 style={{ background: "#0d0618" }}>
+                 style={{ background: "#0d0618", borderRadius: "20px" }}>
               <div
                 className="w-8 h-8 rounded-full border-2 animate-spin"
                 style={{
@@ -75,7 +64,14 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
 
           <video
             ref={videoRef}
-            className="w-full h-full object-contain"
+            style={{
+              height: "100%",
+              maxWidth: "calc(100vw - 32px)",
+              borderRadius: "20px",
+              border: "1px solid rgba(212,168,67,0.45)",
+              boxShadow: "0 4px 60px rgba(0,0,0,0.8), 0 0 100px rgba(13,6,24,0.6)",
+              display: "block",
+            }}
             src={src}
             muted
             loop
