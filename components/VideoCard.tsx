@@ -80,6 +80,7 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
           <video
             ref={videoRef}
             className="w-full h-full object-contain"
+            style={{ borderRadius: "20px" }}
             src={src}
             muted
             loop
