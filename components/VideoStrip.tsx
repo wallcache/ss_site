@@ -58,11 +58,14 @@ export default function VideoStrip() {
           }}
         >
           {videos.map((src, i) => {
-            // Which fractional index is currently centered
             const activeIndex = clampedProgress * (PANEL_COUNT - 1);
-            // Video is "active" when it's within ~0.4 of center (~70% on screen)
-            // progress > 0.02 ensures horizontal scroll has properly begun
-            const isActive = progress > 0.02 && Math.abs(i - activeIndex) < 0.4;
+            const dist = Math.abs(i - activeIndex);
+            // First video starts halfway through the zoom-in entry
+            // All videos stay playing until fully off screen (dist < 0.9)
+            const isActive =
+              i === 0
+                ? progress > -0.25 && dist < 0.9
+                : dist < 0.9;
             return (
               <VideoCard
                 key={src}
