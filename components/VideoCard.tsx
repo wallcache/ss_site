@@ -47,6 +47,7 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
             height: "100%",
             aspectRatio: "9 / 16",
             maxWidth: "calc(100vw - 32px)",
+            border: "1px solid rgba(212,168,67,0.45)",
             boxShadow: "0 4px 60px rgba(0,0,0,0.8), 0 0 100px rgba(13,6,24,0.6)",
           }}
         >
