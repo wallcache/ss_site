@@ -24,13 +24,19 @@ export default function VideoCard({ src, active }: VideoCardProps) {
 
   return (
     <div
-      className="h-full flex-shrink-0 relative flex items-center justify-center"
-      style={{ width: "100vw", padding: "0 6px" }}
+      className="flex-shrink-0 relative flex items-center justify-center"
+      style={{
+        width: "100vw",
+        height: "100%",
+        padding: "2vh 6px",
+      }}
     >
       <div
-        className="relative w-full h-full rounded-sm overflow-hidden"
+        className="relative h-full rounded-sm overflow-hidden"
         style={{
-          boxShadow: "0 0 40px rgba(0,0,0,0.7), 0 0 80px rgba(13,6,24,0.5)",
+          aspectRatio: "9 / 16",
+          maxWidth: "calc(100vw - 12px)",
+          boxShadow: "0 4px 60px rgba(0,0,0,0.8), 0 0 100px rgba(13,6,24,0.6)",
         }}
       >
         {/* Loading spinner */}

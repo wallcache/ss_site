@@ -61,31 +61,45 @@ export default function SplashScreen() {
 
       {/* Content */}
       <div className="text-center relative z-10 px-4">
-        <h1
-          className="text-8xl md:text-[10rem] font-light leading-none"
+        <div
+          className="text-xs md:text-sm tracking-[0.35em] uppercase mb-8"
           style={{
-            color: "#d4a843",
+            color: "rgba(212, 168, 67, 0.4)",
             fontFamily: "Georgia, 'Times New Roman', serif",
-            letterSpacing: "0.08em",
           }}
         >
-          S
+          The stars have aligned
+        </div>
+
+        <h1
+          className="leading-none"
+          style={{
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            letterSpacing: "-0.02em",
+          }}
+        >
           <span
-            className="inline-block text-6xl md:text-8xl align-middle mx-2 md:mx-4"
+            className="inline-block text-7xl md:text-9xl"
             style={{
-              color: "rgba(212, 168, 67, 0.3)",
-              fontFamily: "Georgia, 'Times New Roman', serif",
+              color: "#d4a843",
+              fontWeight: 300,
+              fontStyle: "italic",
+            }}
+          >S</span><span
+            className="inline-block text-7xl md:text-9xl"
+            style={{
+              color: "rgba(212, 168, 67, 0.35)",
+              fontWeight: 300,
+              fontStyle: "italic",
               transform: "scaleX(-1)",
             }}
-          >
-            S
-          </span>
+          >S</span>
         </h1>
 
         <div
-          className="mt-6 text-sm md:text-base tracking-[0.25em]"
+          className="mt-5 text-xs md:text-sm tracking-[0.25em]"
           style={{
-            color: "rgba(212, 168, 67, 0.5)",
+            color: "rgba(212, 168, 67, 0.45)",
             fontFamily: "Georgia, 'Times New Roman', serif",
           }}
         >
