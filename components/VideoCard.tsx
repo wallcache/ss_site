@@ -48,38 +48,34 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
         className="flex-shrink-0 relative flex items-center justify-center"
         style={{ height: "100%", padding: "2vh 8px" }}
       >
-        <div style={{ height: "100%", position: "relative" }}>
-          {!loaded && (
-            <div className="absolute inset-0 flex items-center justify-center z-10"
-                 style={{ background: "#0d0618", borderRadius: "20px" }}>
-              <div
-                className="w-8 h-8 rounded-full border-2 animate-spin"
-                style={{
-                  borderColor: "rgba(212,168,67,0.15)",
-                  borderTopColor: "rgba(212,168,67,0.5)",
-                }}
-              />
-            </div>
-          )}
+        {!loaded && (
+          <div className="absolute inset-0 flex items-center justify-center z-10">
+            <div
+              className="w-8 h-8 rounded-full border-2 animate-spin"
+              style={{
+                borderColor: "rgba(212,168,67,0.15)",
+                borderTopColor: "rgba(212,168,67,0.5)",
+              }}
+            />
+          </div>
+        )}
 
-          <video
-            ref={videoRef}
-            style={{
-              height: "100%",
-              maxHeight: "80vh",
-              maxWidth: "calc(100vw - 32px)",
-              borderRadius: "20px",
-              boxShadow: "0 4px 60px rgba(0,0,0,0.8), 0 0 100px rgba(13,6,24,0.6)",
-              display: "block",
-            }}
-            src={src}
-            muted
-            loop
-            playsInline
-            preload="auto"
-            onSeeked={() => setLoaded(true)}
-          />
-        </div>
+        <video
+          ref={videoRef}
+          style={{
+            maxHeight: "96vh",
+            maxWidth: "calc(100vw - 32px)",
+            borderRadius: "20px",
+            boxShadow: "0 4px 60px rgba(0,0,0,0.8), 0 0 100px rgba(13,6,24,0.6)",
+            display: "block",
+          }}
+          src={src}
+          muted
+          loop
+          playsInline
+          preload="auto"
+          onSeeked={() => setLoaded(true)}
+        />
       </div>
     );
   }
