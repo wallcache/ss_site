@@ -53,7 +53,7 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
       >
         <div
           ref={observeRef}
-          className="relative overflow-hidden"
+          className="relative"
           style={{
             height: "100%",
             aspectRatio: "9 / 16",
@@ -61,7 +61,7 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
             borderRadius: "20px",
             border: "1px solid rgba(212,168,67,0.45)",
             boxShadow: "0 4px 60px rgba(0,0,0,0.8), 0 0 100px rgba(13,6,24,0.6)",
-            WebkitMaskImage: "radial-gradient(white, black)",
+            clipPath: "inset(0 round 20px)",
           }}
         >
           {!loaded && (
