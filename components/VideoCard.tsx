@@ -12,6 +12,7 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
   function VideoCard({ src, active, onReady }, ref) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [loaded, setLoaded] = useState(false);
+    const [revealed, setRevealed] = useState(false);
     const hasPlayedRef = useRef(false);
 
     // Signal ready as soon as metadata is available (reliable on mobile)
@@ -48,13 +49,14 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
       if (!video) return;
 
       if (active) {
+        if (!revealed) setRevealed(true);
         video.currentTime = 0;
         video.play().catch(() => {});
       } else {
         video.pause();
         video.currentTime = 0.001;
       }
-    }, [active]);
+    }, [active, revealed]);
 
     return (
       <div
@@ -82,6 +84,11 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
             borderRadius: "20px",
             boxShadow: "0 4px 60px rgba(0,0,0,0.8), 0 0 100px rgba(13,6,24,0.6)",
             display: "block",
+            opacity: revealed ? 1 : 0,
+            transform: revealed
+              ? "translateY(0) rotate(0deg)"
+              : "translateY(40px) rotate(3deg)",
+            transition: "opacity 0.8s ease-out, transform 0.8s ease-out",
           }}
           src={src}
           muted
