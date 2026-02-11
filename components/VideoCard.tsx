@@ -77,7 +77,7 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
         <video
           ref={videoRef}
           style={{
-            maxHeight: "96vh",
+            maxHeight: "85vh",
             maxWidth: "calc(100vw - 32px)",
             borderRadius: "20px",
             boxShadow: "0 4px 60px rgba(0,0,0,0.8), 0 0 100px rgba(13,6,24,0.6)",
