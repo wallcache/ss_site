@@ -7,7 +7,7 @@ import VideoCard from "./VideoCard";
 const videos = [
   "/videos/frame1.mp4",
   "/videos/frame2.mp4",
-  "/videos/fram3.mp4",
+  "/videos/frame3.mp4",
   "/videos/frame4.mp4",
 ];
 

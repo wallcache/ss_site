@@ -5,6 +5,7 @@ export default function Home() {
   return (
     <main>
       <SplashScreen />
+      <div style={{ height: "30vh" }} />
       <VideoStrip />
     </main>
   );

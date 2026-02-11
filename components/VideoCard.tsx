@@ -9,10 +9,29 @@ interface VideoCardProps {
 const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
   function VideoCard({ src }, ref) {
     const videoRef = useRef<HTMLVideoElement>(null);
+    const observeRef = useRef<HTMLDivElement>(null);
     const [loaded, setLoaded] = useState(false);
 
+    // Play from start when visible, pause + reset when not
     useEffect(() => {
-      videoRef.current?.play().catch(() => {});
+      const el = observeRef.current;
+      const video = videoRef.current;
+      if (!el || !video) return;
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            video.currentTime = 0;
+            video.play().catch(() => {});
+          } else {
+            video.pause();
+          }
+        },
+        { threshold: 0.3 }
+      );
+
+      observer.observe(el);
+      return () => observer.disconnect();
     }, []);
 
     return (
@@ -22,6 +41,7 @@ const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
         style={{ height: "100%", padding: "2vh 8px" }}
       >
         <div
+          ref={observeRef}
           className="relative rounded-sm overflow-hidden"
           style={{
             height: "100%",
