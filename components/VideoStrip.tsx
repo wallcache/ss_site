@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useCallback, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 import VideoCard from "./VideoCard";
 
@@ -17,11 +17,8 @@ export default function VideoStrip() {
   const runwayRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const progress = useScrollProgress(runwayRef);
-  const snapTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isSnapping = useRef(false);
   const [panelWidth, setPanelWidth] = useState(0);
 
-  // Measure panel width on mount and resize
   useEffect(() => {
     const measure = () => {
       if (panelRef.current) {
@@ -34,10 +31,6 @@ export default function VideoStrip() {
   }, []);
 
   const clampedProgress = Math.max(0, Math.min(1, progress));
-  const activeIndex = Math.round(clampedProgress * (PANEL_COUNT - 1));
-
-  // Translate: center each panel in the viewport
-  // At progress=0, first panel centered. At progress=1, last panel centered.
   const totalShift = panelWidth * (PANEL_COUNT - 1);
   const translateX = -(clampedProgress * totalShift);
 
@@ -47,43 +40,6 @@ export default function VideoStrip() {
   const scale = entering ? 0.7 + entryT * 0.3 : 1;
   const opacity = entering ? entryT : 1;
 
-  // Snap to nearest panel
-  const snapToNearest = useCallback(() => {
-    const el = runwayRef.current;
-    if (!el || isSnapping.current) return;
-
-    const runwayHeight = el.offsetHeight - window.innerHeight;
-    if (runwayHeight <= 0) return;
-
-    const scrolled = -el.getBoundingClientRect().top;
-    const currentProgress = scrolled / runwayHeight;
-
-    if (currentProgress < 0 || currentProgress > 1) return;
-
-    const nearestIndex = Math.round(currentProgress * (PANEL_COUNT - 1));
-    const targetProgress = nearestIndex / (PANEL_COUNT - 1);
-    const targetScrollTop = el.offsetTop + targetProgress * runwayHeight;
-
-    isSnapping.current = true;
-    window.scrollTo({ top: targetScrollTop, behavior: "smooth" });
-    setTimeout(() => { isSnapping.current = false; }, 600);
-  }, []);
-
-  useEffect(() => {
-    const onScroll = () => {
-      if (isSnapping.current) return;
-      if (snapTimeout.current) clearTimeout(snapTimeout.current);
-      snapTimeout.current = setTimeout(snapToNearest, 150);
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (snapTimeout.current) clearTimeout(snapTimeout.current);
-    };
-  }, [snapToNearest]);
-
-  // Center offset: shift strip so first panel starts centered in viewport
   const centerOffset = panelWidth > 0 ? (window.innerWidth - panelWidth) / 2 : 0;
 
   return (
@@ -106,7 +62,6 @@ export default function VideoStrip() {
               key={src}
               ref={i === 0 ? panelRef : undefined}
               src={src}
-              active={i === activeIndex}
             />
           ))}
         </div>

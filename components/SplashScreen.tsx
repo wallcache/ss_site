@@ -1,128 +1,88 @@
 "use client";
 
-import NebulaCanvas from "./NebulaCanvas";
-
-// Deterministic pseudo-random from seed
 const seeded = (i: number) => {
   const x = Math.sin(i * 127.1 + 311.7) * 43758.5453;
   return x - Math.floor(x);
 };
 
-const stars = Array.from({ length: 50 }, (_, i) => ({
-  top: seeded(i) * 100,
-  left: seeded(i + 50) * 100,
-  size: 1 + seeded(i + 100) * 2,
-  duration: 2 + seeded(i + 150) * 4,
-  delay: seeded(i + 200) * 5,
+const stars = Array.from({ length: 18 }, (_, i) => ({
+  top: seeded(i) * 90 + 5,
+  left: seeded(i + 50) * 90 + 5,
+  size: 8 + seeded(i + 100) * 16,
+  duration: 3 + seeded(i + 150) * 5,
+  delay: seeded(i + 200) * 6,
 }));
 
-const shootingStars = Array.from({ length: 5 }, (_, i) => ({
-  top: 5 + seeded(i + 300) * 40,
-  left: seeded(i + 350) * 60,
-  duration: 1.5 + seeded(i + 400) * 1.5,
-  delay: i * 4 + seeded(i + 450) * 3,
-}));
+/* 4-pointed diamond star SVG */
+function DiamondStar({ size }: { size: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z" />
+    </svg>
+  );
+}
 
 export default function SplashScreen() {
   return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* WebGL nebula background */}
-      <NebulaCanvas />
-
-      {/* Twinkling stars */}
+    <section
+      className="relative h-screen flex items-center justify-center overflow-hidden"
+      style={{ background: "#0d0618" }}
+    >
+      {/* Diamond stars */}
       {stars.map((s, i) => (
         <div
-          key={`star-${i}`}
-          className="star"
-          style={{
-            top: `${s.top}%`,
-            left: `${s.left}%`,
-            width: `${s.size}px`,
-            height: `${s.size}px`,
-            animationDuration: `${s.duration}s`,
-            animationDelay: `${s.delay}s`,
-          }}
-        />
-      ))}
-
-      {/* Shooting stars */}
-      {shootingStars.map((s, i) => (
-        <div
-          key={`shoot-${i}`}
-          className="shooting-star"
+          key={i}
+          className="star-diamond"
           style={{
             top: `${s.top}%`,
             left: `${s.left}%`,
             animationDuration: `${s.duration}s`,
             animationDelay: `${s.delay}s`,
           }}
-        />
+        >
+          <DiamondStar size={s.size} />
+        </div>
       ))}
 
       {/* Content */}
       <div className="text-center relative z-10 px-4">
         <div
-          className="text-xs md:text-sm tracking-[0.35em] uppercase mb-8"
-          style={{
-            color: "rgba(212, 168, 67, 0.4)",
-            fontFamily: "Georgia, 'Times New Roman', serif",
-          }}
+          className="text-xs md:text-sm tracking-[0.35em] uppercase mb-8 font-light"
+          style={{ color: "rgba(212, 168, 67, 0.45)" }}
         >
           The stars have aligned
         </div>
 
-        <h1
-          className="leading-none"
-          style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
-            letterSpacing: "-0.02em",
-          }}
-        >
+        <h1 className="leading-none" style={{ letterSpacing: "-0.02em" }}>
           <span
-            className="inline-block text-7xl md:text-9xl"
-            style={{
-              color: "#d4a843",
-              fontWeight: 300,
-              fontStyle: "italic",
-            }}
+            className="inline-block text-7xl md:text-9xl font-light italic"
+            style={{ color: "#d4a843" }}
           >S</span><span
-            className="inline-block text-7xl md:text-9xl"
-            style={{
-              color: "#d4a843",
-              fontWeight: 300,
-              fontStyle: "italic",
-              transform: "scaleX(-1)",
-            }}
+            className="inline-block text-7xl md:text-9xl font-light italic"
+            style={{ color: "#d4a843", transform: "scaleX(-1)" }}
           >S</span>
         </h1>
 
         <div
-          className="mt-5 text-xs md:text-sm tracking-[0.25em]"
-          style={{
-            color: "rgba(212, 168, 67, 0.45)",
-            fontFamily: "Georgia, 'Times New Roman', serif",
-          }}
+          className="mt-5 text-sm md:text-base tracking-[0.25em] font-light"
+          style={{ color: "rgba(212, 168, 67, 0.5)" }}
         >
           Sara &amp; Sevveriano
         </div>
-
       </div>
 
-      {/* Scroll prompt pinned to bottom */}
+      {/* Scroll prompt */}
       <div className="absolute bottom-8 left-0 right-0 z-10 flex flex-col items-center">
         <div
-          className="text-[10px] md:text-xs tracking-[0.3em] uppercase mb-3"
-          style={{
-            color: "rgba(212, 168, 67, 0.35)",
-            fontFamily: "Georgia, 'Times New Roman', serif",
-          }}
+          className="text-[10px] md:text-xs tracking-[0.3em] uppercase mb-3 font-light"
+          style={{ color: "rgba(212, 168, 67, 0.3)" }}
         >
           Scroll to explore
         </div>
         <div className="animate-bounce">
           <div
             className="w-px h-6 mx-auto"
-            style={{ background: "linear-gradient(to bottom, rgba(212, 168, 67, 0.35), transparent)" }}
+            style={{ background: "linear-gradient(to bottom, rgba(212, 168, 67, 0.3), transparent)" }}
           />
         </div>
       </div>

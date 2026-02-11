@@ -4,24 +4,16 @@ import { useEffect, useRef, useState, forwardRef } from "react";
 
 interface VideoCardProps {
   src: string;
-  active: boolean;
 }
 
 const VideoCard = forwardRef<HTMLDivElement, VideoCardProps>(
-  function VideoCard({ src, active }, ref) {
+  function VideoCard({ src }, ref) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [loaded, setLoaded] = useState(false);
 
     useEffect(() => {
-      const el = videoRef.current;
-      if (!el) return;
-
-      if (active) {
-        el.play().catch(() => {});
-      } else {
-        el.pause();
-      }
-    }, [active]);
+      videoRef.current?.play().catch(() => {});
+    }, []);
 
     return (
       <div
