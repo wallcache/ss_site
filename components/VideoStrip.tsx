@@ -6,9 +6,9 @@ import VideoCard from "./VideoCard";
 
 const videos = [
   "/videos/frame1.mp4",
-  "/videos/frame2.mp4",
-  "/videos/frame3.mp4",
-  "/videos/frame4.mp4",
+  "/videos/cameos_card.mp4",
+  "/videos/legos_card.mp4",
+  "/videos/lovers_card.mp4",
 ];
 
 const PANEL_COUNT = videos.length;
